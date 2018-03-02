@@ -17,8 +17,8 @@ wget https://raw.githubusercontent.com/weolar/miniblink49/master/vc6/include/crt
 cd ..
 make CC_NAME_INDEX=3 CC_INDEX=3 _HOST_OS=Windows_NT _HOST_ARCH=x86_64 _NUM_CPUS=1 CC=x86_64-w64-mingw32-gcc CFLAGS_OPT="-O2 -DBID_THREAD= -DBID_MS_FLAGS" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
 $CC -shared -o libbid.dll *.obj
-mkdir $prefix/lib
-cp libbid.dll $prefix/lib/.
+mkdir $prefix/bin
+cp libbid.dll $prefix/bin/.
 
 elif [ $target == "i686-w64-mingw32" ]; then
 
@@ -28,8 +28,8 @@ wget https://raw.githubusercontent.com/weolar/miniblink49/master/vc6/include/crt
 cd ..
 make CC_NAME_INDEX=3 CC_INDEX=3 _HOST_OS=Windows_NT _HOST_ARCH=x86 _NUM_CPUS=1 CC=i686-w64-mingw32-gcc CFLAGS_OPT="-O2 -DBID_THREAD= -DBID_MS_FLAGS" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
 $CC -shared -o libbid.dll *.obj
-mkdir $prefix/lib
-cp libbid.dll $prefix/lib/.
+mkdir $prefix/bin
+cp libbid.dll $prefix/bin/.
 
 elif [ $target == "i686-linux-gnu" ]; then
 
