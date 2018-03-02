@@ -10,6 +10,7 @@ sources = [
 # Bash recipe for building across all platforms
 script = raw"""
 if [ $target == "x86_64-w64-mingw32" ]; then
+
 cd $WORKSPACE/srcdir
 cd IntelRDFPMathLib20U1/LIBRARY/src/
 wget https://raw.githubusercontent.com/weolar/miniblink49/master/vc6/include/crt/float.h
@@ -20,6 +21,7 @@ mkdir $prefix/lib
 cp libbid.dll $prefix/lib/.
 
 elif [ $target == "i686-w64-mingw32" ]; then
+
 cd $WORKSPACE/srcdir
 cd IntelRDFPMathLib20U1/LIBRARY/src/
 wget https://raw.githubusercontent.com/weolar/miniblink49/master/vc6/include/crt/float.h
@@ -29,16 +31,34 @@ $CC -shared -o libbid.dll *.obj
 mkdir $prefix/lib
 cp libbid.dll $prefix/lib/.
 
+elif [ $target == "i686-linux-gnu" ]; then
+
+cd $WORKSPACE/srcdir
+cd IntelRDFPMathLib20U1/LIBRARY/
+make _HOST_ARCH=i686 CC=gcc CFLAGS_OPT="-O2 -fPIC" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
+$CC -shared -o libbid.so *.o
+mkdir $prefix/lib
+cp libbid.* $prefix/lib/.
+
+elif [ $target == "x86_64-apple-darwin14" ]; then
+
+cd $WORKSPACE/srcdir
+cd IntelRDFPMathLib20U1/LIBRARY/
+make CC=gcc CFLAGS_OPT="-O2 -fPIC" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
+$CC -shared -o libbid.dylib *.o
+mkdir $prefix/lib
+cp libbid.* $prefix/lib/.
+
 else
+
 cd $WORKSPACE/srcdir
 cd IntelRDFPMathLib20U1/LIBRARY/
 make CC=gcc CFLAGS_OPT="-O2 -fPIC" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
 $CC -shared -o libbid.so *.o
 mkdir $prefix/lib
-cp libbid.so $prefix/lib/.
+cp libbid.* $prefix/lib/.
 
 fi
-
 """
 
 # These are the platforms we will build for by default, unless further
@@ -46,9 +66,9 @@ fi
 platforms = [
     Linux(:i686, :glibc),
     Linux(:x86_64, :glibc),
-    Linux(:aarch64, :glibc),
-    Linux(:armv7l, :glibc),
-    Linux(:powerpc64le, :glibc),
+    # Linux(:aarch64, :glibc),
+    # Linux(:armv7l, :glibc),
+    # Linux(:powerpc64le, :glibc),
     MacOS(),
     Windows(:i686),
     Windows(:x86_64)
@@ -107,7 +127,7 @@ else
 end
 
 if !isempty(get(ENV,"TRAVIS_TAG",""))
-    print_buildjl(pwd(), products, hashes,
+    print_buildjl(pwd(), products, product_hashes,
         "https://github.com/quinnj/DecFPBuilder/releases/download/$(ENV["TRAVIS_TAG"])")
 end
 
