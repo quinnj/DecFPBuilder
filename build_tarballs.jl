@@ -40,6 +40,17 @@ $CC -shared -o libbid.so *.o
 mkdir $prefix/lib
 cp libbid.* $prefix/lib/.
 
+elif [ $target == "armv7l-linux-gnu" ]; then
+
+cd $WORKSPACE/srcdir
+cd IntelRDFPMathLib20U1
+sed -i -e 's/^#if \(!defined _MSC_VER || defined __INTEL_COMPILER\)/#if !defined __ENABLE_BINARY80__ \&\& (\1)/' LIBRARY/src/bid_functions.h TESTS/test_bid_functions.h
+cd LIBRARY
+make _HOST_ARCH=i686 CC=gcc CFLAGS_OPT="-O2 -fPIC -fsigned-char -D__ENABLE_BINARY80__=0" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
+$CC -shared -o libbid.so *.o
+mkdir $prefix/lib
+cp libbid.* $prefix/lib/.
+
 elif [ $target == "x86_64-apple-darwin14" ]; then
 
 cd $WORKSPACE/srcdir
@@ -67,7 +78,7 @@ platforms = [
     Linux(:i686, :glibc),
     Linux(:x86_64, :glibc),
     # Linux(:aarch64, :glibc),
-    # Linux(:armv7l, :glibc),
+    Linux(:armv7l, :glibc),
     # Linux(:powerpc64le, :glibc),
     MacOS(),
     Windows(:i686),
