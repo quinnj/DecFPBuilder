@@ -40,7 +40,7 @@ $CC -shared -o libbid.so *.o
 mkdir $prefix/lib
 cp libbid.* $prefix/lib/.
 
-elif [ $target == "armv7l-linux-gnu" ]; then
+elif [ $target == "arm-linux-gnueabihf" ]; then
 
 cd $WORKSPACE/srcdir
 cd IntelRDFPMathLib20U1
