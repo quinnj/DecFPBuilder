@@ -1,5 +1,8 @@
 using BinaryBuilder
 
+name = "DecFP"
+version = v"2.0.2"
+
 # Collection of sources required to build DecFP
 sources = [
     "http://www.netlib.org/misc/intel/IntelRDFPMathLib20U2.tar.gz" =>
@@ -83,4 +86,4 @@ dependencies = [
 ]
 
 # Build the tarballs, and possibly a `build.jl` as well.
-build_tarballs(ARGS, "DecFP", sources, script, platforms, products, dependencies)
+build_tarballs(ARGS, name, version, sources, script, platforms, products, dependencies)
