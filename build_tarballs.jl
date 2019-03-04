@@ -2,10 +2,10 @@
 # `julia build_tarballs.jl --help` to see a usage message.
 using BinaryBuilder
 
-name = "decfp2"
+name = "DecFP"
 version = v"2.2.0" # 2.0 Update 2
 
-# Collection of sources required to build decfp2
+# Collection of sources required to build DecFP
 sources = [
     "https://www.netlib.org/misc/intel/IntelRDFPMathLib20U2.tar.gz" =>
     "93c0c78e0989df88f8540bf38d6743734804cef1e40706fd8fe5c6a03f79e173",
@@ -26,7 +26,12 @@ if [[ $target == *"-w64-"* ]]; then
     make CC_NAME=cc _HOST_OS=Windows_NT _HOST_ARCH=$_HOST_ARCH AR_CMD="ar rv" CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC -shared -o libbid.$dlext *.obj
 else
-    make CC_NAME=cc CFLAGS_OPT=-fPIC CFLAGS=-fPIC _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
+    if [[ $target == *"-musl"* ]]; then
+        CFLAGS_OPT="-fPIC -D__QNX__"
+    else
+        CFLAGS_OPT="-fPIC"
+    fi
+    make CC_NAME=cc CFLAGS_OPT="$CFLAGS_OPT" CFLAGS="$CFLAGS_OPT" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC -shared -o libbid.$dlext *.o
 fi
 
@@ -47,6 +52,7 @@ platforms = [
     Linux(:aarch64, libc=:musl),
     Linux(:armv7l, libc=:musl, call_abi=:eabihf),
     MacOS(:x86_64),
+    # FreeBSD(:x86_64),
     Windows(:i686),
     Windows(:x86_64)
 ]
@@ -58,7 +64,6 @@ products(prefix) = [
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
-
 ]
 
 # Build the tarballs, and possibly a `build.jl` as well.
