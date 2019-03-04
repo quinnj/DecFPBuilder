@@ -2,7 +2,7 @@ language: julia
 os:
   - linux
 julia:
-  - 1.1
+  - 1.0
 notifications:
   email: false
 git:
@@ -14,25 +14,12 @@ cache:
 env:
   global:
     - BINARYBUILDER_DOWNLOADS_CACHE=downloads
-    - BINARYBUILDER_AUTOMATIC_APPLE=true
+    - BINARYBUILDER_AUTOMATIC_APPLE=false
 sudo: required
 
 # Before anything else, get the latest versions of things
 before_script:
-  - julia -e 'using Pkg; Pkg.add("BinaryProvider"); Pkg.add("BinaryBuilder")'
+  - julia -e 'using Pkg; pkg"add BinaryProvider"; pkg"add BinaryBuilder#master"; Pkg.build()'
 
 script:
   - julia build_tarballs.jl
-
-deploy:
-    provider: releases
-    api_key:
-        # Note; this api_key is only valid for quinnj/DecFPBuilder; you need
-        # to make your own: https://docs.travis-ci.com/user/deployment/releases/
-        secure: J+JiWju+q2atZzgqEz2zzzqkvrIydIToRiQBo1Ft1DFNoZZPargu2Qiz5OCWD/J5r2lHWhgSq70ae22wWjS2S2plFWez8+9iIreFBvmTzvB5XST2vmo4l316/vUM0bzW2pG2bMRPQlv7AkiaQf2JqK1nUeXqTpaVi4MjnwfuiSuPaRX2ga+R2Cn08XmjldXInj0dYgcNthMTzNy3wlkAxRSTMgf0RorcmeTiOhcBfu3pqzO2NwLof8wu67Kki5GbrVkxuckqrKx5khb18Dn/72wLk53PxpyiNIFLBLYNgEuCfsmHLfBy27E0eXIFfPg3NcLZCSXiqyszcgjUA0KLEAVkMaMAqeTRiIJT8g4QOte7rE6Cl+u3+czpmlTJ56YMlWB7C/ECvGK22H+MKYm+yuIrGIEmIDlJvH76K95MTDqRUASyb5knQJ5d6/muW57tzqAX7YmmDWDKjvGrJPKUQ3PV6NV0/8Cjvnj2Wjw5BgIoJgp576P27u0UTYzilRf551WpG75VKe+02qeONGB2fFCASOpjZQXGd8U/v+hbFUL8iIZTaNw8fyuYG78XjvRJHECalo7qKvZadc3E3uZqaUKj7jyUFcWdSc/LDOWQT8TXFcQGJdgwNjwv7L6sqODPv569nlY8eoCAR97xdooVv69TbqgGBp4pVIdjpAG5CwE=
-    file_glob: true
-    file: products/*
-    skip_cleanup: true
-    on:
-        repo: quinnj/DecFPBuilder
-        tags: true
