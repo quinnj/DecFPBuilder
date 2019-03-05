@@ -24,7 +24,7 @@ fi
 
 if [[ $target == *"-w64-"* ]]; then
     make CC_NAME=cc _HOST_OS=Windows_NT AR_CMD="ar rv" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
-    $CC -shared -o libbid.$dlext *.obj
+    $CC $LDFLAGS -shared -o libbid.$dlext *.obj
 else
     if [[ $target == *"-musl"* ]]; then
         CFLAGS_OPT="-fPIC -D__QNX__"
