@@ -9,7 +9,6 @@ version = v"2.2.0" # 2.0 Update 2
 sources = [
     "https://www.netlib.org/misc/intel/IntelRDFPMathLib20U2.tar.gz" =>
     "93c0c78e0989df88f8540bf38d6743734804cef1e40706fd8fe5c6a03f79e173",
-
 ]
 
 # Bash recipe for building across all platforms
@@ -25,6 +24,8 @@ fi
 if [[ $target == *"-w64-"* ]]; then
     make CC_NAME=cc _HOST_OS=Windows_NT AR_CMD="ar rv" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC $LDFLAGS -shared -o libbid.$dlext *.obj
+    mkdir -p $prefix/bin
+    cp libbid.$dlext $prefix/bin/
 else
     if [[ $target == *"-musl"* ]]; then
         CFLAGS_OPT="-fPIC -D__QNX__"
@@ -35,10 +36,10 @@ else
     fi
     make CC_NAME=cc CFLAGS_OPT="$CFLAGS_OPT" CFLAGS="$CFLAGS_OPT" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC $LDFLAGS -shared -o libbid.$dlext *.o
+    mkdir -p $prefix/lib
+    cp libbid.$dlext $prefix/lib/
 fi
 
-mkdir -p $prefix/bin
-cp libbid.$dlext $prefix/bin/
 """
 
 # These are the platforms we will build for by default, unless further
