@@ -35,7 +35,7 @@ else
     elif [[ $target == *"freebsd"* ]]; then
         CFLAGS_OPT+=" -D__linux"
     fi
-    make CC_NAME=cc CFLAGS_OPT="$CFLAGS_OPT" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
+    make CC_NAME=cc CFLAGS_OPT="$CFLAGS_OPT" CFLAGS="$CFLAGS_OPT" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC $LDFLAGS -shared -o libbid.$dlext *.o
     mkdir -p $prefix/lib
     cp libbid.$dlext $prefix/lib/
