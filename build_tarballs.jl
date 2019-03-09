@@ -14,7 +14,9 @@ sources = [
 # Bash recipe for building across all platforms
 script = raw"""
 cd $WORKSPACE/srcdir
-cd IntelRDFPMathLib20U2/LIBRARY/
+cd IntelRDFPMathLib20U2
+sed -i -e 's/^#if \(!defined _MSC_VER || defined __INTEL_COMPILER\)/#if !defined __ENABLE_BINARY80__ \&\& (\1)/' LIBRARY/src/bid_functions.h TESTS/test_bid_functions.h
+cd LIBRARY
 if [ "$nbits" == 64 ]; then
      _HOST_ARCH=x86_64
 else
@@ -27,12 +29,11 @@ if [[ $target == *"-w64-"* ]]; then
     mkdir -p $prefix/bin
     cp libbid.$dlext $prefix/bin/
 else
+    CFLAGS_OPT="-fPIC -fsigned-char -D__ENABLE_BINARY80__=0"
     if [[ $target == *"-musl"* ]]; then
-        CFLAGS_OPT="-fPIC -D__QNX__"
+        CFLAGS_OPT+=" -D__QNX__"
     elif [[ $target == *"freebsd"* ]]; then
-        CFLAGS_OPT="-fPIC -D__linux"
-    else
-        CFLAGS_OPT="-fPIC"
+        CFLAGS_OPT+=" -D__linux"
     fi
     make CC_NAME=cc CFLAGS_OPT="$CFLAGS_OPT" CFLAGS="$CFLAGS_OPT" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC $LDFLAGS -shared -o libbid.$dlext *.o
