@@ -13,18 +13,18 @@ sources = [
 
 # Bash recipe for building across all platforms
 script = raw"""
-cd $WORKSPACE/srcdir
-cd IntelRDFPMathLib20U2
-sed -i -e 's/^#if \(!defined _MSC_VER || defined __INTEL_COMPILER\)/#if !defined __ENABLE_BINARY80__ \&\& (\1)/' LIBRARY/src/bid_functions.h TESTS/test_bid_functions.h
+cd $WORKSPACE/srcdir/IntelRDFPMathLib20U2
+patch --binary -p1 < $WORKSPACE/srcdir/patches/decfp.patch
 cd LIBRARY
-if [ "$nbits" == 64 ]; then
+if [[ $nbits == 64 ]]; then
      _HOST_ARCH=x86_64
 else
      _HOST_ARCH=x86
 fi
 
 if [[ $target == *"-w64-"* ]]; then
-    make CC_NAME=cc _HOST_OS=Windows_NT AR_CMD="ar rv" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
+    CFLAGS_OPT="-fPIC -fsigned-char -D__ENABLE_BINARY80__=0 -DBID_THREAD="
+    make CC_NAME=cc CFLAGS_OPT="$CFLAGS_OPT" CFLAGS="$CFLAGS_OPT" _HOST_OS=Windows_NT AR_CMD="ar rv" _HOST_ARCH=$_HOST_ARCH CALL_BY_REF=0 GLOBAL_RND=1 GLOBAL_FLAGS=1 UNCHANGED_BINARY_FLAGS=1
     $CC $LDFLAGS -shared -o libbid.$dlext *.obj
     mkdir -p $prefix/bin
     cp libbid.$dlext $prefix/bin/
