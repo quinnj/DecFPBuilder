@@ -9,6 +9,7 @@ version = v"2.2.0" # 2.0 Update 2
 sources = [
     "https://www.netlib.org/misc/intel/IntelRDFPMathLib20U2.tar.gz" =>
     "93c0c78e0989df88f8540bf38d6743734804cef1e40706fd8fe5c6a03f79e173",
+    "./bundled",
 ]
 
 # Bash recipe for building across all platforms
